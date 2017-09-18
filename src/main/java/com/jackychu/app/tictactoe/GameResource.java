@@ -59,6 +59,8 @@ public class GameResource {
     		return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Game not found for ID: " + id)).build();
     	}
 
+		currentGame.updateTime();
+		
     	if (currentGame.checkFull()) {
 	    	currentGame.setStatus(Game.Status.END);
 	    } else {
@@ -70,9 +72,14 @@ public class GameResource {
 	    	currentGame.setStatus(Game.Status.END);
 	    }
 
-		Map<String, Game> games = this.getGames();
-		games.put(id, currentGame);
-    	return Response.ok(currentGame).build();
+		boolean validate = g.validate(currentGame);
+		if (validate) {
+			Map<String, Game> games = this.getGames();
+			games.put(id, currentGame);
+			return Response.ok(currentGame).build();
+		} else {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new ErrorMessage("Game status is invalidate")).build();
+		}
     }
 
     @Path("{id}")

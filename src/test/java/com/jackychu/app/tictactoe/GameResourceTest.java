@@ -3,6 +3,7 @@ package com.jackychu.app.tictactoe;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 
@@ -10,6 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class GameResourceTest {
 
@@ -37,12 +39,23 @@ public class GameResourceTest {
         server.stop();
     }
 
-    /**
-     * Test to see that the message "Got it!" is sent in the response.
     @Test
-    public void testGetIt() {
-        String responseMsg = target.path("game/abc").request().get(String.class);
-        assertEquals("Got it! abc", responseMsg);
+    public void testGetNotFound() {
+		Response res = target.path("game/abc").request().get();
+		assertEquals("Should return status 404", 404, res.getStatus());
     }
-     */
+
+	/**
+    @Test
+    public void testPutNotFound() {
+		Response res = target.path("game/abc").request().put();
+		assertEquals("Should return status 404", 404, res.getStatus());
+    }
+	*/
+	
+    @Test
+    public void testDeleteNotFound() {
+		Response res = target.path("game/abc").request().delete();
+		assertEquals("Should return status 404", 404, res.getStatus());
+    }
 }

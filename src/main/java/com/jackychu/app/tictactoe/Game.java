@@ -12,6 +12,7 @@ public class Game implements Serializable {
 	private int[][] grid;
 	private Status status;
 	private int winner;
+	private long lastUpdateTime;
 	
 	public static enum Status {
 		START, PLAYING, END
@@ -25,6 +26,7 @@ public class Game implements Serializable {
 		this.grid = new int[dimension][dimension];
 		this.id = java.util.UUID.randomUUID().toString();
 		this.status = Status.START;
+		this.lastUpdateTime = System.currentTimeMillis();
 	}
 	
 	public String getId() {
@@ -67,6 +69,14 @@ public class Game implements Serializable {
 		this.status = s;
 	}
 
+	public void updateTime() {
+		this.lastUpdateTime = System.currentTimeMillis();
+	}
+
+	public long getLastUpdateTime() {
+		return this.lastUpdateTime;
+	}
+	
 	public String toJson() throws Exception{
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonString = mapper.writeValueAsString(this);
@@ -77,6 +87,48 @@ public class Game implements Serializable {
 		ObjectMapper mapper = new ObjectMapper();
 		Game g = mapper.readValue(jsonString, Game.class);
 		return g;
+	}
+	
+	public boolean validate(Game latestGame) {
+		if (this.id != latestGame.getId()) return false;
+		if (this.dimension != latestGame.getDimension()) return false;
+		if (this.lastUpdateTime > latestGame.getLastUpdateTime()) return false;
+		if (this.status == Status.END && latestGame.getStatus() != Status.END) return false;
+		if (this.status == Status.PLAYING && latestGame.getStatus() != Status.PLAYING) return false;
+		
+		int[][] grid = this.grid;
+		int[][] latestGrid = latestGame.getGrid();
+		
+		int count1 = 0, count2 = 0;
+		int latestCount1 = 0, latestCount2 = 0;
+		boolean differenceFound = false;
+		int difference = 0;
+		
+		for (int i=0; i<this.dimension; i++) {
+			for (int j=0; j<this.dimension; j++) {
+				if (grid[i][j] == 1) count1++;
+				if (grid[i][j] == 2) count2++;
+				if (latestGrid[i][j] == 1) latestCount1++;
+				if (latestGrid[i][j] == 2) latestCount2++;
+				
+				if (grid[i][j] != latestGrid[i][j]) {
+					if (differenceFound) return false; //Only allow one difference
+					difference = latestGrid[i][j];
+					differenceFound = true;
+				}
+			}
+		}
+		
+		if(!differenceFound) return false;
+		
+		System.out.println(difference);
+		if (difference == 1) {
+			if (!((count1 + 1 == latestCount1) && (count2 == latestCount2) && (latestCount1 -1 == latestCount2))) return false;
+		} else {
+			if (!((count1 == latestCount1) && (count2 + 1 == latestCount2) && (latestCount1 == latestCount2))) return false;
+		}
+		
+		return true;
 	}
 	
 	public int checkWinner() {
