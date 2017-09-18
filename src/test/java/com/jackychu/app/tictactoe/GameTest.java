@@ -176,4 +176,20 @@ public class GameTest {
     	boolean validate = g.validate(g2);
     	assertEquals(false, validate);
     }
+
+
+	//value not 0, 1, 2
+	@Test
+	public void testValidateWrongValue() {
+		Game g = new Game();
+		g.setGrid(new int[][]{{0,1,2},{2,1,0},{1,0,2}});
+
+		Game g2 = new Game();
+		g2.setId(g.getId());
+		g2.updateTime();
+		g2.setGrid(new int[][]{{0,1,2},{2,1,3},{1,0,2}});
+
+		boolean validate = g.validate(g2);
+		assertEquals(false, validate);
+	}
 }

@@ -3,6 +3,7 @@ package com.jackychu.app.tictactoe;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @XmlRootElement
@@ -83,6 +84,17 @@ public class Game implements Serializable {
 		return jsonString;
 	}
 
+    public String toString(){
+	    try {
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonString = mapper.writeValueAsString(this);
+            return jsonString;
+	    } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+    
 	public static Game fromJson(String jsonString) throws Exception{
 		ObjectMapper mapper = new ObjectMapper();
 		Game g = mapper.readValue(jsonString, Game.class);
@@ -90,11 +102,12 @@ public class Game implements Serializable {
 	}
 	
 	public boolean validate(Game latestGame) {
-		if (this.id != latestGame.getId()) return false;
+		if (!this.id.equals(latestGame.getId())) return false;
 		if (this.dimension != latestGame.getDimension()) return false;
 		if (this.lastUpdateTime > latestGame.getLastUpdateTime()) return false;
 		if (this.status == Status.END && latestGame.getStatus() != Status.END) return false;
-		if (this.status == Status.PLAYING && latestGame.getStatus() != Status.PLAYING) return false;
+		if (this.status == Status.PLAYING &&
+                !(latestGame.getStatus() == Status.PLAYING || latestGame.getStatus() == Status.END)) return false;
 		
 		int[][] grid = this.grid;
 		int[][] latestGrid = latestGame.getGrid();
@@ -106,6 +119,7 @@ public class Game implements Serializable {
 		
 		for (int i=0; i<this.dimension; i++) {
 			for (int j=0; j<this.dimension; j++) {
+				if (latestGrid[i][j] != 0 && latestGrid[i][j] != 1 && latestGrid[i][j] != 2) return false;
 				if (grid[i][j] == 1) count1++;
 				if (grid[i][j] == 2) count2++;
 				if (latestGrid[i][j] == 1) latestCount1++;
@@ -121,7 +135,6 @@ public class Game implements Serializable {
 		
 		if(!differenceFound) return false;
 		
-		System.out.println(difference);
 		if (difference == 1) {
 			if (!((count1 + 1 == latestCount1) && (count2 == latestCount2) && (latestCount1 -1 == latestCount2))) return false;
 		} else {
