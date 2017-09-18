@@ -39,10 +39,10 @@ public class GameResourceTest {
 
     /**
      * Test to see that the message "Got it!" is sent in the response.
-     */
     @Test
     public void testGetIt() {
-        String responseMsg = target.path("game").request().get(String.class);
-        assertEquals("Got it!", responseMsg);
+        String responseMsg = target.path("game/abc").request().get(String.class);
+        assertEquals("Got it! abc", responseMsg);
     }
+     */
 }
