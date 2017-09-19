@@ -17,8 +17,10 @@ import org.glassfish.grizzly.http.server.Session;
 @Path("/api/v1.0/game")
 public class GameResource {
 
-   	
-   	@Inject
+	/**
+	 * Inject http request object to get session data
+	 */
+	@Inject
     private Provider<Request> grizzlyRequestProvider;
 
     /**
@@ -29,9 +31,9 @@ public class GameResource {
     private Map<String, Game> games;
 
     /**
-     * Get specific game status by id.
-     * If cannot find game with id, then return 404.
-     * If id == all, then return whole games in current session
+     * Get specific game status by id. <br>
+     * If cannot find game with id, then return 404.<br>
+     * If id == all, then return whole games in current session<br>
      * @param id the id of game
      * @return game(s)
      */
@@ -51,10 +53,14 @@ public class GameResource {
 	        return Response.ok(g).build();
 	    }
     }
-    
+
+    /**
+     * Create a new game
+     * @return Game object in json format
+     */
     @POST
 	@Produces({MediaType.APPLICATION_JSON})
-    public Response createGame() throws Exception {
+    public Response createGame(){
     	Map<String, Game> games = this.getGames();
 
     	Game g = new Game();
@@ -62,11 +68,17 @@ public class GameResource {
     	return Response.ok(g).build();
     }
 
+    /**
+     * Check and update game status.
+     * @param id game id
+     * @param currentGame latest game status
+     * @return Game object in json format
+     */
     @Path("{id}")
     @PUT
 	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_JSON})
-    public Response updateGame(@PathParam("id") String id, Game currentGame) throws Exception {
+    public Response updateGame(@PathParam("id") String id, Game currentGame) {
     	Game g = this.getGameById(id);
     	if (g == null) {
     		return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Game not found for ID: " + id)).build();
@@ -95,10 +107,15 @@ public class GameResource {
 		}
     }
 
+    /**
+     * Delete game by id
+     * @param id Game id
+     * @return Response.OK
+     */
     @Path("{id}")
     @DELETE
 	@Produces({MediaType.APPLICATION_JSON})
-    public Response deleteGame(@PathParam("id") String id) throws Exception {
+    public Response deleteGame(@PathParam("id") String id) {
     	Game g = this.getGameById(id);
     	if (g == null) {
     		return Response.status(Response.Status.NOT_FOUND).entity(new ErrorMessage("Game not found for ID: " + id)).build();
@@ -109,13 +126,21 @@ public class GameResource {
     	
     	return Response.ok().build();
     }
-    
+
+    /**
+     * Get current http session
+     * @return Http session
+     */
     private Session getSession() {
     	Request httpRequest = grizzlyRequestProvider.get();
     	Session session = httpRequest.getSession();
     	return session;
     }
-    
+
+    /**
+     * Get games map object in session
+     * @return games map
+     */
     private Map<String, Game> getGames() {
     	Session session = this.getSession();
     	Map<String, Game> games = (Map<String, Game>)session.getAttribute("games");
@@ -125,7 +150,12 @@ public class GameResource {
         }
     	return games;
     }
-    
+
+    /**
+     * Get game object by id
+     * @param id Game id
+     * @return Game object
+     */
     private Game getGameById(String id) {
     	Map<String, Game> games = this.getGames();
     	if (games == null) {

@@ -20,6 +20,10 @@ public class GameResourceTest {
     private WebTarget target;
     private NewCookie cookie;
 
+    /**
+     * Start web server and request a new session of games.
+     * @throws Exception start server up fail
+     */
     @Before
     public void setUp() throws Exception {
         // start the server
@@ -41,11 +45,20 @@ public class GameResourceTest {
         cookie  = cookies.get("JSESSIONID");
     }
 
+    /**
+     * Shutdown the server
+     * @throws Exception Shutdown server fail
+     */
     @After
     public void tearDown() throws Exception {
         server.shutdown();
     }
 
+    /**
+     * Test get all games.<br>
+     * At begin, no games.<br>
+     * Then create two games and check size is 2
+     */
     @Test
     public void testGetAllGames() {
         //Empty list
@@ -69,6 +82,9 @@ public class GameResourceTest {
         assertEquals(count, 2);
     }
 
+    /**
+     * Get the game with id which doesn't exist.
+     */
     @Test
     public void testGetGameNotFound() {
         Invocation.Builder invocationBuilder = target.path("api/v1.0/game/abc").request(MediaType.APPLICATION_JSON);
@@ -76,15 +92,9 @@ public class GameResourceTest {
 		assertEquals("Should return status 404", 404, res.getStatus());
     }
 
-    @Test
-    public void testCreateNewGame() {
-        Invocation.Builder invocationBuilder = target.path("api/v1.0/game").request(MediaType.APPLICATION_JSON);
-        Response res = invocationBuilder.cookie(cookie).post(Entity.text(""));
-        Game gameForTest = res.readEntity(Game.class);
-        assertNotNull(gameForTest);
-    }
-
-
+    /**
+     *  Get the game with id.
+     */
     @Test
     public void testGetGame() {
         //Create new Game
@@ -100,15 +110,21 @@ public class GameResourceTest {
         assertEquals(g.getId(), gameForTest.getId());
     }
 
-    /*
+    /**
+     * Test create new game and game status is START
+     */
     @Test
-    public void testUpdateGameNotFound() {
-        Invocation.Builder invocationBuilder = target.path("api/v1.0/game/abc").request(MediaType.APPLICATION_JSON);
-        Response res = invocationBuilder.cookie(cookie).put(Entity.text(""));
-		assertEquals("Should return status 404", 404, res.getStatus());
+    public void testCreateNewGame() {
+        Invocation.Builder invocationBuilder = target.path("api/v1.0/game").request(MediaType.APPLICATION_JSON);
+        Response res = invocationBuilder.cookie(cookie).post(Entity.text(""));
+        Game gameForTest = res.readEntity(Game.class);
+        assertNotNull(gameForTest);
+        assertEquals(Game.Status.START, gameForTest.getStatus());
     }
-    */
-    
+
+    /**
+     * Test update game status. The game is valid and status is PLAYING
+     */
     @Test
     public void testUpdateGame() {
         //Create new Game
@@ -126,6 +142,9 @@ public class GameResourceTest {
         assertEquals(g.getStatus(), Game.Status.PLAYING);
     }
 
+    /**
+     * Test game winner is player 1
+     */
     @Test
     public void testUpdateGameAndWin1() {
         //Create new Game
@@ -160,6 +179,9 @@ public class GameResourceTest {
         assertEquals(g.getStatus(), Game.Status.END);
     }
 
+    /**
+     * Test game winner is player 2
+     */
     @Test
     public void testUpdateGameAndWin2() {
         //Create new Game
@@ -198,6 +220,9 @@ public class GameResourceTest {
         assertEquals(g.getStatus(), Game.Status.END);
     }
 
+    /**
+     * Test game with draw
+     */
     @Test
     public void testUpdateGameAndDraw() {
         //Create new Game
@@ -248,6 +273,9 @@ public class GameResourceTest {
         assertEquals(g.getStatus(), Game.Status.END);
     }
 
+    /**
+     * Test delete game with id, but id doesn't exist.
+     */
     @Test
     public void testDeleteGameNotFound() {
         Invocation.Builder invocationBuilder = target.path("api/v1.0/game/abc").request(MediaType.APPLICATION_JSON);
@@ -255,6 +283,9 @@ public class GameResourceTest {
 		assertEquals("Should return status 404", 404, res.getStatus());
     }
 
+    /**
+     * Test delete game success.
+     */
     @Test
     public void testDeleteGame() {
         //Create new Game

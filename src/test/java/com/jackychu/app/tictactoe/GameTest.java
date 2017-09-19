@@ -6,6 +6,9 @@ import org.junit.Test;
 import static org.junit.Assert.fail;
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Test Game class
+ */
 public class GameTest {
 
     @Before
@@ -16,6 +19,9 @@ public class GameTest {
     public void tearDown() throws Exception {
     }
 
+    /**
+     * Test toJson method
+     */
     @Test
     public void testToJson() {
     	Game g = new Game();
@@ -30,7 +36,10 @@ public class GameTest {
 	    	fail(e.toString());
 	    }
     }
-    
+
+    /**
+     * Test fromJson method
+     */
     @Test
     public void testFromJson() {
     	int[][] grid = new int[][]{{0,1,2},{2,1,0},{1,0,2}};
@@ -55,12 +64,19 @@ public class GameTest {
 		
     }
 
+    /**
+     * Test fromJson method but fail. Wrong members mapping.
+     * @throws Exception Convert fail
+     */
     @Test(expected=Exception.class)
     public void testFromJsonFail() throws Exception {
     	String jsonString = "{\"dimension\":3,\"grid\":[[0,1,2],[2,1,0][1,0,2]],\"id\":\"12345\",\"status\":\"START\",\"winner\":0,\"lastUpdateTime\":1}";
 		Game g = Game.fromJson(jsonString);
     }
 
+    /**
+     * Test the checkFull method. The game board is not full.
+     */
     @Test
     public void testCheckNotFull() {
     	Game g = new Game();
@@ -69,6 +85,9 @@ public class GameTest {
     	assertEquals(false, full);
     }
 
+    /**
+     * Test the checkFull method. The game board is full.
+     */
     @Test
     public void testCheckFull() {
     	Game g = new Game();
@@ -77,6 +96,9 @@ public class GameTest {
     	assertEquals(true, full);
     }
 
+    /**
+     * Test checkWinner method. No winner.
+     */
     @Test
     public void testNoWinner() {
     	Game g = new Game();
@@ -85,6 +107,9 @@ public class GameTest {
     	assertEquals(0, winner);
     }
 
+    /**
+     * Test checkWinner method. The winner is on column.
+     */
     @Test
     public void testCheckWinnerAtColumn() {
     	Game g = new Game();
@@ -93,6 +118,9 @@ public class GameTest {
     	assertEquals(1, winner);
     }
 
+    /**
+     * Test checkWinner method. The winner is on row.
+     */
     @Test
     public void testCheckWinnerAtRow() {
     	Game g = new Game();
@@ -101,6 +129,9 @@ public class GameTest {
     	assertEquals(2, winner);
     }
 
+    /**
+     * Test checkWinner method. The winner is on diagnonals.
+     */
     @Test
     public void testCheckWinnerAtDiagonals() {
     	Game g = new Game();
@@ -109,6 +140,9 @@ public class GameTest {
     	assertEquals(1, winner);
     }
 
+    /**
+     * Test checkWinner method. The winner is on diagnonals.
+     */
     @Test
     public void testCheckWinnerAtDiagonals2() {
     	Game g = new Game();
@@ -117,7 +151,9 @@ public class GameTest {
     	assertEquals(2, winner);
     }
 
-	//move 1
+    /**
+     * Test validate method. player 1 move.
+     */
     @Test
     public void testValidate() {
     	Game g = new Game();
@@ -132,7 +168,9 @@ public class GameTest {
     	assertEquals(true, validate);
     }
 
-	//move 2
+    /**
+     * Test validate method. player 2 move.
+     */
     @Test
     public void testValidate2() {
     	Game g = new Game();
@@ -147,7 +185,9 @@ public class GameTest {
     	assertEquals(true, validate);
     }
 
-	//Cannot 1 move twice
+    /**
+     * Test validate method. Fail. Player 1 move twice.
+     */
     @Test
     public void testValidateFail() {
     	Game g = new Game();
@@ -162,7 +202,9 @@ public class GameTest {
     	assertEquals(false, validate);
     }
 
-	//Cannot 2 move twice
+    /**
+     * Test validate method. Fail. Player 2 move twice.
+     */
     @Test
     public void testValidateFail2() {
     	Game g = new Game();
@@ -178,7 +220,9 @@ public class GameTest {
     }
 
 
-	//value not 0, 1, 2
+    /**
+     * Test validate method. The gird value is not 0,1 ro 2.
+     */
 	@Test
 	public void testValidateWrongValue() {
 		Game g = new Game();

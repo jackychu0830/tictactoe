@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.net.URI;
 
 /**
- * Main class.
+ * System start point class
  */
 public class Main {
     // Base URI the Grizzly HTTP server will listen on
@@ -29,12 +29,6 @@ public class Main {
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }
 
-    /**
-     * Main method.
-     *
-     * @param args
-     * @throws IOException
-     */
     public static void main(String[] args) throws IOException {
         final HttpServer server = startServer();
         System.out.println(String.format("Jersey app started with WADL available at "
