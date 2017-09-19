@@ -151,20 +151,20 @@ You welcome to clone the code to your PC. After you clone out the project. You c
 
 * Build
 
-mvn install
+	mvn install
 
 * Run
 
-mvn exec:java
+	mvn exec:java
 
 * JavaDoc
 
-The javadoc already includes in the repository. 
+	The javadoc already includes in the repository. 
 
-mvn javadoc:javadoc
+	mvn javadoc:javadoc
 
 * Test JavaDoc
 
-You also can generate test-javadoc for Test classes.
+	You also can generate test-javadoc for Test classes.
 
-mvn javadoc:test-javadoc
+	mvn javadoc:test-javadoc
