@@ -145,3 +145,26 @@ All response data is in json format. There are two different types:
 	curl command:
 
 	curl -b headers.txt -H "Content-Type: application/json" -X DELETE  http://localhost:9090/tictactoe/api/v1.0/game/163ee5c9-8e1c-4ef1-b982-cf467354cf9c
+
+### * Build and run locally
+You welcome to clone the code to your PC. After you clone out the project. You can use maven to build and run it.
+
+* Build
+
+mvn install
+
+* Run
+
+mvn exec:java
+
+* JavaDoc
+
+The javadoc already includes in the repository. 
+
+mvn javadoc:javadoc
+
+* Test JavaDoc
+
+You also can generate test-javadoc for Test classes.
+
+mvn javadoc:test-javadoc
