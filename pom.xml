@@ -31,14 +31,6 @@
             <!--<artifactId>jersey-media-moxy</artifactId>-->
             <artifactId>jersey-media-json-jackson</artifactId>
         </dependency>
-        <!--
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>4.0.0</version>
-			<scope>provided</scope>
-		</dependency>
-		-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -77,6 +69,15 @@
                 </executions>
                 <configuration>
                     <mainClass>com.jackychu.app.tictactoe.Main</mainClass>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <configuration>
+                    <reportOutputDirectory>./</reportOutputDirectory>
+                    <destDir>apidocs</destDir>
                 </configuration>
             </plugin>
         </plugins>
